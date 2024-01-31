@@ -7,15 +7,46 @@
  *
  * Return: If no common ancestor was found return NULL
  */
-bst_t *array_to_bst(int *array, size_t size)
+#include <stddef.h>
+
+typedef struct binary_tree_s
 {
-	bst_t *new_node = NULL;
+	int value;
+	struct binary_tree_s *parent;
+	struct binary_tree_s *left;
+	struct binary_tree_s *right;
+}
+binary_tree_t;
 
-	unsigned int index;
+int is_bst_util(const binary_tree_t *node, int *prev_value);
 
-	for (index = 0; index < size; index++)
-	{
-		bst_insert(&new_node, array[index]);
+int binary_tree_is_bst(const binary_tree_t *tree)
+{
+	int prev_value = INT_MIN;  // Start with the smallest possible value
+	return is_bst_util(tree, &prev_value);
+}
+
+int is_bst_util(const binary_tree_t *node, int *prev_value):
+	if (node == NULL)
+{
+		return 1;  // An empty tree is a BST
 	}
-	return (new_node);
+
+	// Check the left subtree
+	if (!is_bst_util(node->left, prev_value))
+	{
+	return 0;
+	}
+
+	// Check the current node's value
+	if (node->value <= *prev_value)
+	{
+	return 0;  // Violation of the BST property
+	}
+
+	// Update the previous value
+	*prev_value = node->value;
+
+	// Check the right subtree
+	return is_bst_util(node->right, prev_value);
 }
